@@ -1,0 +1,49 @@
+language: "ja"
+early_access: false
+reviews:
+  request_changes_workflow: false
+  high_level_summary: true
+  poem: false
+  review_status: true
+  collapse_walkthrough: false
+  path_instructions:
+    - path: "**/*.ts?(x)"
+      instructions: |
+        以下の通りレビュー観点を追加してください。
+        
+        コーディングスタイルと規約
+        - ESLint や Prettier などの設定に従っているか？
+        - インデントやスペースなどのフォーマットが統一されているか？
+        - 不要な import や未使用の変数が存在していないか？
+        - 型推論を正しく活用しているか？
+        - any型の使用は必要最小限に留められているか？
+        
+        命名規則
+        - 変数・関数・クラスの名前が役割を明確に示しているか？
+        - インターフェースやタイプエイリアスにおける命名規則（I や T の接頭辞を使う/使わないなど）がプロジェクト規約に沿っているか？
+        - 名前から戻り値・役割が分かりやすいか？
+        
+        アーキテクチャと設計
+        - ファイル・モジュールの分割が適切か？
+        - SOLID 原則などを考慮し、拡張性やテスト容易性が確保されているか？
+        - レイヤーごとの責任分担が明確か？
+        
+        コーディングプラクティス
+        - 重複したコードがないか？
+        - 適切なスコープとアクセス修飾子（public / private / protected）が設定されているか？
+        - null や undefined の取り扱いが適切に行われているか？（Optional chaining や nullチェックなど）
+        - ジェネリクスやユニオン型など TypeScript 固有の機能を効果的に活用しているか？
+        
+        コード最適化
+        - パフォーマンスに影響を与える可能性のあるコードパターンを避けているか？
+        - 配列操作やループ（map, filter, for-of など）を適切に使い分けているか？
+        - 不要な再代入を避け、const を優先的に使用しているか？
+                
+  auto_review:
+    enabled: true
+    ignore_title_keywords:
+      - "WIP"
+      - "DO NOT MERGE"
+    drafts: false
+chat:
+  auto_reply: true
