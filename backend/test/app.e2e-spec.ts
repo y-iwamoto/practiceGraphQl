@@ -20,13 +20,6 @@ describe('AppController (e2e)', () => {
     await app.close();
   });
 
-  it('/ (GET)', () => {
-    return request(app.getHttpServer())
-      .get('/')
-      .expect(200)
-      .expect('Hello World!');
-  });
-
   // resolverのuser全件取得テスト
   it('/graphql - should fetch all users', () => {
     return request(app.getHttpServer())
