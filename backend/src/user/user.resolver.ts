@@ -1,13 +1,13 @@
 import { Query, Resolver } from '@nestjs/graphql';
 import { User } from './user.entity';
-import { DataSource } from 'typeorm';
+import { UserService } from './user.service';
 
 @Resolver(() => User)
 export class UserResolver {
-  constructor(private readonly dataSource: DataSource) { }
+  constructor(private readonly userService: UserService) { }
 
   @Query(() => [User])
   async users() {
-    return this.dataSource.getRepository(User).find();
+    return this.userService.findAll();
   }
 }
