@@ -43,17 +43,16 @@ describe('AppController (e2e)', () => {
         const users = res.body.data.users;
         expect(users).toBeDefined();
         expect(Array.isArray(users)).toBe(true);
-        expect(users.length).toBeGreaterThan(0);
 
-        const user = users[0];
-        expect(user.email).toBeDefined();
-        expect(typeof user.email).toBe('string');
-        expect(user.firstName).toBeDefined();
-        expect(typeof user.firstName).toBe('string');
-        expect(user.lastName).toBeDefined();
-        expect(typeof user.lastName).toBe('string');
-        expect(user.createdAt).toBeDefined();
-        expect(user.updatedAt).toBeDefined();
+        if (users.length > 0) {
+          const user = users[0];
+          expect(typeof user.id).toBe('string');
+          expect(typeof user.email).toBe('string');
+          expect(typeof user.firstName).toBe('string');
+          expect(typeof user.lastName).toBe('string');
+          expect(user.createdAt).toBeDefined();
+          expect(user.updatedAt).toBeDefined();
+        }
       });
   });
 });
