@@ -7,7 +7,7 @@ import { join } from 'path';
 import { DbModule } from './configs/db.module';
 import { ConfigModule } from '@nestjs/config';
 import * as Joi from 'joi';
-import { UserModule } from 'src/user/user.module';
+import { UserModule } from '@/user/user.module';
 
 @Module({
   imports: [
