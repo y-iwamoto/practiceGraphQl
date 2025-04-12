@@ -2,6 +2,10 @@ import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { User } from './user.entity';
 import { UserService } from './user.service';
 import { CreateUserInput } from '@/user/dto/create-user.input';
+import {
+  ConflictException,
+  InternalServerErrorException,
+} from '@nestjs/common';
 
 @Resolver(() => User)
 export class UserResolver {
@@ -18,11 +22,16 @@ export class UserResolver {
       createUserInput.email,
     );
     if (isEmailExists) {
-      throw new Error(
+      throw new ConflictException(
         '入力されたメールアドレスのアカウントが既に存在する可能性があります',
       );
     }
 
-    return this.userService.create(createUserInput);
+    try {
+      return this.userService.create(createUserInput);
+    } catch (error) {
+      console.error('User creation failed:', error);
+      throw new InternalServerErrorException('ユーザーの作成に失敗しました');
+    }
   }
 }
