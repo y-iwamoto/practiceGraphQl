@@ -1,5 +1,6 @@
 import { useQuery } from '@apollo/client'
 import { graphql } from './ggl'
+import { FC } from 'react'
 
 const getUserQueryDocument = graphql(`
   query GetUser {
@@ -12,8 +13,7 @@ const getUserQueryDocument = graphql(`
   }
 `)
 
-
-function Test() {
+const Test: FC = () => {
 
   const { data, loading, error } = useQuery(getUserQueryDocument)
 
