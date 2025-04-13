@@ -1,6 +1,7 @@
 import { useQuery } from '@apollo/client'
-import { graphql } from './ggl'
+import { graphql } from '../ggl'
 import { FC } from 'react'
+import { Link } from 'react-router'
 
 const getUserQueryDocument = graphql(`
   query GetUser {
@@ -13,7 +14,7 @@ const getUserQueryDocument = graphql(`
   }
 `)
 
-const Test: FC = () => {
+const UserList: FC = () => {
 
   const { data, loading, error } = useQuery(getUserQueryDocument)
 
@@ -23,6 +24,7 @@ const Test: FC = () => {
   return (
     <div>
       <h1>テスト画面</h1>
+      <Link to="/user-create-input">ユーザー作成画面へ</Link>
       <ul style={{ paddingInlineStart: 0, listStyle: 'none' }}>
         {data?.users.length === 0 && <li>ユーザーが見つかりませんでした</li>}
         {data?.users.map((user) => (
@@ -43,4 +45,4 @@ const Test: FC = () => {
   )
 }
 
-export default Test
+export default UserList
