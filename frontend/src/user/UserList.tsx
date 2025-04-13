@@ -23,7 +23,7 @@ const UserList: FC = () => {
 
   return (
     <div>
-      <h1>テスト画面</h1>
+      <h1>ユーザー一覧</h1>
       <Link to="/user-create-input">ユーザー作成画面へ</Link>
       <ul style={{ paddingInlineStart: 0, listStyle: 'none' }}>
         {data?.users.length === 0 && <li>ユーザーが見つかりませんでした</li>}
