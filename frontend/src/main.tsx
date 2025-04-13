@@ -5,7 +5,8 @@ import { ApolloProvider } from '@apollo/client'
 import client from './graphql/apolloClient.ts'
 import './index.css'
 import App from './App.tsx'
-import Test from './Test.tsx'
+import UserList from './user/UserList.tsx'
+import UserCreateInput from './user/UserCreateInput.tsx'
 
 const rootElement = document.getElementById('root');
 if (!rootElement) {
@@ -18,7 +19,8 @@ createRoot(rootElement).render(
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<App />} />
-          <Route path="/test" element={<Test />} />
+          <Route path="/user" element={<UserList />} />
+          <Route path="/user-create-input" element={<UserCreateInput />} />
         </Routes>
       </BrowserRouter>
     </ApolloProvider>

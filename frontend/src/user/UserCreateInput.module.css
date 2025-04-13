@@ -1,0 +1,33 @@
+.formWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.inputWrapper {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+}
+
+.inputWrapper input {
+  flex: 1;
+}
+
+.inputWrapper label {
+  flex-shrink: 0;
+}
+
+.errorMessage {
+  color: red;
+  text-align: left;
+}
+
+.button {
+  background-color: #000;
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+

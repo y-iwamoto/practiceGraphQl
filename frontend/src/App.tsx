@@ -8,7 +8,7 @@ function App() {
   return (
     <div>
       <h1>トップ画面</h1>
-      <button onClick={() => navigate('/test')}>テスト画面へ</button>
+      <button onClick={() => navigate('/user')}>ユーザー一覧画面へ</button>
     </div>
   )
 }
