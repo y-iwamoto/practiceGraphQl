@@ -6,6 +6,7 @@ import { DbModule } from './configs/db.module';
 import { ConfigModule } from '@nestjs/config';
 import * as Joi from 'joi';
 import { UserModule } from '@/user/user.module';
+import { FarmModule } from './farm/farm.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { UserModule } from '@/user/user.module';
       isGlobal: true,
     }),
     UserModule,
+    FarmModule,
   ],
 })
 export class AppModule { }
