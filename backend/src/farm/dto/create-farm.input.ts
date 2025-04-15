@@ -13,6 +13,7 @@ export class CreateFarmInput {
   @Field(() => String)
   @IsString()
   @IsNotEmpty({ message: '農場名は必須です' })
+  @Length(1, 100, { message: '農場名は1文字以上100文字以下で入力してください' })
   name: string;
 
   @Field(() => String)
@@ -24,21 +25,25 @@ export class CreateFarmInput {
   @Field(() => String)
   @IsString()
   @IsNotEmpty({ message: '都道府県は必須です' })
+  @Length(1, 20, { message: '都道府県は1文字以上20文字以下で入力してください' })
   prefecture: string;
 
   @Field(() => String)
   @IsString()
   @IsNotEmpty({ message: '市区町村は必須です' })
+  @Length(1, 50, { message: '市区町村は1文字以上50文字以下で入力してください' })
   city: string;
 
   @Field(() => String)
   @IsString()
   @IsNotEmpty({ message: '住所は必須です' })
+  @Length(1, 100, { message: '住所は1文字以上100文字以下で入力してください' })
   restAddress: string;
 
   @Field(() => String, { nullable: true })
   @IsString()
   @IsOptional()
+  @Length(0, 100, { message: '建物名は100文字以下で入力してください' })
   building: string;
 
   @Field(() => Int)

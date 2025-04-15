@@ -26,12 +26,14 @@ scalar DateTime
 type Farm {
   building: String
   city: String!
+  createdAt: DateTime
   id: ID!
   name: String!
   owner: User!
   postalCode: String!
   prefecture: String!
   restAddress: String!
+  updatedAt: DateTime
 }
 
 type Mutation {
