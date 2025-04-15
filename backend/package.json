@@ -18,12 +18,11 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "typeorm:generate": "npx typeorm-ts-node-esm migration:generate -d src/configs/migrations-local.config.ts",
-    "typeorm:migrate": "npx typeorm-ts-node-esm migration:run -d src/configs/migrations-local.config.ts",
-    "typeorm:revert": "npx typeorm-ts-node-esm migration:revert -d src/configs/migrations-local.config.ts",
-    "typeorm:drop": "npx typeorm-ts-node-esm schema:drop -d src/configs/migrations-local.config.ts",
-    "typeorm:show": "npx typeorm-ts-node-esm migration:show -d src/configs/migrations-local.config.ts",
-    "seed": "ts-node src/seed.ts"
+    "typeorm:generate": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js -d src/configs/migrations-local.config.ts migration:generate src/db/migrations/init",
+    "typeorm:migrate": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js -d src/configs/migrations-local.config.ts migration:run",
+    "typeorm:revert": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js -d src/configs/migrations-local.config.ts migration:revert",
+    "typeorm:show": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js -d src/configs/migrations-local.config.ts migration:show",
+    "seed": "ts-node -r tsconfig-paths/register  src/seed.ts"
   },
   "dependencies": {
     "@apollo/server": "^4.12.0",

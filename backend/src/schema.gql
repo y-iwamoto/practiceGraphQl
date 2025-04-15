@@ -2,6 +2,16 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+input CreateFarmInput {
+  building: String
+  city: String!
+  name: String!
+  ownerId: Int!
+  postalCode: String!
+  prefecture: String!
+  restAddress: String!
+}
+
 input CreateUserInput {
   email: String!
   firstName: String!
@@ -13,7 +23,21 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
+type Farm {
+  building: String
+  city: String!
+  createdAt: DateTime
+  id: ID!
+  name: String!
+  owner: User!
+  postalCode: String!
+  prefecture: String!
+  restAddress: String!
+  updatedAt: DateTime
+}
+
 type Mutation {
+  createFarm(createFarmInput: CreateFarmInput!): Farm!
   createUser(createUserInput: CreateUserInput!): User!
 }
 
@@ -24,6 +48,7 @@ type Query {
 type User {
   createdAt: DateTime
   email: String!
+  farms: [Farm!]
   firstName: String!
   id: ID!
   lastName: String!

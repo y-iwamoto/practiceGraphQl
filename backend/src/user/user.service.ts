@@ -18,6 +18,12 @@ export class UserService {
     return isPresent;
   }
 
+  async findOne(id: number): Promise<User | null> {
+    return this.dataSource.getRepository(User).findOne({
+      where: { id },
+    });
+  }
+
   async create(createUserInput: CreateUserInput): Promise<User> {
     const user = this.dataSource.getRepository(User).create(createUserInput);
     return this.dataSource.getRepository(User).save(user);
