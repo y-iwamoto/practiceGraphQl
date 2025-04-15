@@ -5,6 +5,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  Index,
   JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
@@ -48,6 +49,7 @@ export class Farm {
   @Length(0, 100)
   building: string;
 
+  @Index()
   @Column({ type: 'int' })
   ownerId: number;
 
