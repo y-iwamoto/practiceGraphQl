@@ -1,0 +1,21 @@
+.inputWrapper {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+}
+
+.inputWrapper select {
+  flex: 1;
+}
+
+.inputWrapper label {
+  flex-shrink: 0;
+}
+
+.errorMessage {
+  color: red;
+  text-align: left;
+  margin-block: 0px;
+}
+
+
