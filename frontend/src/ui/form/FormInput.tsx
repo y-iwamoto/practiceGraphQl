@@ -29,12 +29,15 @@ export const FormInput = <TFormValues extends FieldValues>({
       <div className={styles.inputWrapper}>
         <label htmlFor={name}>{label}</label>
         <input
+          id={name}
           type={type}
           placeholder={placeholder}
+          aria-invalid={!!error}
+          aria-describedby={error ? `${name}-error` : undefined}
           {...register(name, registerOptions)}
         />
       </div>
-      {error && <p className={styles.errorMessage}>{error.message}</p>}
+      {error && <p id={`${name}-error`} className={styles.errorMessage}>{error.message}</p>}
     </>
   )
 }
