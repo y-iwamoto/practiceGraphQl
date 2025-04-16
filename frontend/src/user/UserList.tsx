@@ -1,22 +1,11 @@
 import { useQuery } from '@apollo/client'
-import { graphql } from '../ggl'
 import { FC } from 'react'
 import { Link } from 'react-router'
-
-const getUserQueryDocument = graphql(`
-  query GetUser {
-    users {
-      id
-      email
-      firstName
-      lastName
-    }
-  }
-`)
+import { getUsersQueryDocument } from '../graphql/queries/user'
 
 const UserList: FC = () => {
 
-  const { data, loading, error } = useQuery(getUserQueryDocument)
+  const { data, loading, error } = useQuery(getUsersQueryDocument)
 
   if (loading) return <div>Loading...</div>
   if (error) return <div>Error: {error.message}</div>
