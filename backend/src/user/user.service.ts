@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { DataSource } from 'typeorm';
+import { DataSource, FindOptionsRelations } from 'typeorm';
 import { User } from './user.entity';
 import { CreateUserInput } from '@/user/dto/create-user.input';
 
@@ -7,8 +7,10 @@ import { CreateUserInput } from '@/user/dto/create-user.input';
 export class UserService {
   constructor(private readonly dataSource: DataSource) { }
 
-  async findAll(): Promise<User[]> {
-    return this.dataSource.getRepository(User).find();
+  async findAll(relations: FindOptionsRelations<User>): Promise<User[]> {
+    return this.dataSource.getRepository(User).find({
+      relations,
+    });
   }
 
   async checkEmail(email: string): Promise<boolean> {
