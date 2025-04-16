@@ -5,7 +5,7 @@ import { z } from "zod";
 import { graphql } from "../ggl";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { FormInput } from "../ui/form/FromInput";
+import { FormInput } from "../ui/form/FormInput";
 import { getUsersQueryDocument } from "../graphql/queries/user";
 import styles from "./FarmCreateInput.module.css";
 import { FormSelect } from "../ui/form/FormSelect";
