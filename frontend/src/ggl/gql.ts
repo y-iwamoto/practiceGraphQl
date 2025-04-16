@@ -14,11 +14,13 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
  * Learn more about it here: https://the-guild.dev/graphql/codegen/plugins/presets/preset-client#reducing-bundle-size
  */
 type Documents = {
-    "\n  query GetUser {\n    users {\n      id\n      email\n      firstName\n      lastName\n    }\n  }\n": typeof types.GetUserDocument,
+    "\n  mutation CreateFarm($createFarmInput: CreateFarmInput!) {\n    createFarm(createFarmInput: $createFarmInput) {\n      id\n      name\n      postalCode\n      prefecture\n      city\n      restAddress\n      building\n      owner {\n        id\n        email\n        firstName\n        lastName\n      }\n    }\n  }\n": typeof types.CreateFarmDocument,
+    "\n  query GetUsers {\n    users {\n      id\n      email\n      firstName\n      lastName\n    }\n  }\n": typeof types.GetUsersDocument,
     "\n  mutation CreateUser($createUserInput: CreateUserInput!) {\n    createUser(createUserInput: $createUserInput) {\n      id\n      email\n      firstName\n      lastName\n    }\n  }\n": typeof types.CreateUserDocument,
 };
 const documents: Documents = {
-    "\n  query GetUser {\n    users {\n      id\n      email\n      firstName\n      lastName\n    }\n  }\n": types.GetUserDocument,
+    "\n  mutation CreateFarm($createFarmInput: CreateFarmInput!) {\n    createFarm(createFarmInput: $createFarmInput) {\n      id\n      name\n      postalCode\n      prefecture\n      city\n      restAddress\n      building\n      owner {\n        id\n        email\n        firstName\n        lastName\n      }\n    }\n  }\n": types.CreateFarmDocument,
+    "\n  query GetUsers {\n    users {\n      id\n      email\n      firstName\n      lastName\n    }\n  }\n": types.GetUsersDocument,
     "\n  mutation CreateUser($createUserInput: CreateUserInput!) {\n    createUser(createUserInput: $createUserInput) {\n      id\n      email\n      firstName\n      lastName\n    }\n  }\n": types.CreateUserDocument,
 };
 
@@ -39,7 +41,11 @@ export function graphql(source: string): unknown;
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  query GetUser {\n    users {\n      id\n      email\n      firstName\n      lastName\n    }\n  }\n"): (typeof documents)["\n  query GetUser {\n    users {\n      id\n      email\n      firstName\n      lastName\n    }\n  }\n"];
+export function graphql(source: "\n  mutation CreateFarm($createFarmInput: CreateFarmInput!) {\n    createFarm(createFarmInput: $createFarmInput) {\n      id\n      name\n      postalCode\n      prefecture\n      city\n      restAddress\n      building\n      owner {\n        id\n        email\n        firstName\n        lastName\n      }\n    }\n  }\n"): (typeof documents)["\n  mutation CreateFarm($createFarmInput: CreateFarmInput!) {\n    createFarm(createFarmInput: $createFarmInput) {\n      id\n      name\n      postalCode\n      prefecture\n      city\n      restAddress\n      building\n      owner {\n        id\n        email\n        firstName\n        lastName\n      }\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  query GetUsers {\n    users {\n      id\n      email\n      firstName\n      lastName\n    }\n  }\n"): (typeof documents)["\n  query GetUsers {\n    users {\n      id\n      email\n      firstName\n      lastName\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
