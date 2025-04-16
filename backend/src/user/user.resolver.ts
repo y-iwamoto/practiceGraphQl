@@ -1,4 +1,4 @@
-import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { Args, Info, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { User } from './user.entity';
 import { UserService } from './user.service';
 import { CreateUserInput } from '@/user/dto/create-user.input';
@@ -6,14 +6,22 @@ import {
   ConflictException,
   InternalServerErrorException,
 } from '@nestjs/common';
+import { GraphQLResolveInfo, Kind } from 'graphql';
 
 @Resolver(() => User)
 export class UserResolver {
   constructor(private readonly userService: UserService) { }
 
   @Query(() => [User])
-  async users() {
-    return this.userService.findAll();
+  async users(@Info() info: GraphQLResolveInfo) {
+    const selections = info.fieldNodes[0].selectionSet?.selections;
+    const hasFarms = selections?.some(
+      (selection) =>
+        selection.kind === Kind.FIELD && selection.name.value === 'farms',
+    );
+
+    const relations = hasFarms ? { farms: true } : {};
+    return this.userService.findAll(relations);
   }
 
   @Mutation(() => User)

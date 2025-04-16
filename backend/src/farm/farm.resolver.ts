@@ -1,12 +1,23 @@
-import { Resolver, Mutation, Args } from '@nestjs/graphql';
+import { Resolver, Mutation, Args, Query, Info } from '@nestjs/graphql';
 import { FarmService } from './farm.service';
 import { Farm } from './entities/farm.entity';
 import { CreateFarmInput } from './dto/create-farm.input';
-import { GraphQLError } from 'graphql';
+import { GraphQLError, GraphQLResolveInfo, Kind } from 'graphql';
 
 @Resolver(() => Farm)
 export class FarmResolver {
   constructor(private readonly farmService: FarmService) { }
+
+  @Query(() => [Farm])
+  async farms(@Info() info: GraphQLResolveInfo) {
+    const selections = info.fieldNodes[0].selectionSet?.selections;
+    const hasOwner = selections?.some(
+      (selection) =>
+        selection.kind === Kind.FIELD && selection.name.value === 'owner',
+    );
+    const relations = hasOwner ? { owner: true } : {};
+    return this.farmService.findAll(relations);
+  }
 
   @Mutation(() => Farm)
   async createFarm(@Args('createFarmInput') createFarmInput: CreateFarmInput) {
