@@ -15,7 +15,11 @@ export class ProduceItemResolver {
     @Args('createProduceItemInput')
     createProduceItemInput: CreateProduceItemInput
   ) {
-    return this.produceItemService.create(createProduceItemInput);
+    try {
+      return this.produceItemService.create(createProduceItemInput);
+    } catch (error) {
+      console.error(error);
+      throw new Error('ProduceItemの作成に失敗しました');
+    }
   }
-
 }
