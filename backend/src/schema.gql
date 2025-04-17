@@ -46,8 +46,6 @@ type Mutation {
   createFarm(createFarmInput: CreateFarmInput!): Farm!
   createProduceItem(createProduceItemInput: CreateProduceItemInput!): ProduceItem!
   createUser(createUserInput: CreateUserInput!): User!
-  removeProduceItem(id: Int!): ProduceItem!
-  updateProduceItem(updateProduceItemInput: UpdateProduceItemInput!): ProduceItem!
 }
 
 type ProduceItem {
@@ -61,14 +59,7 @@ type ProduceItem {
 
 type Query {
   farms: [Farm!]!
-  produceItem(id: Int!): ProduceItem!
   users: [User!]!
-}
-
-input UpdateProduceItemInput {
-  farmId: Int
-  id: Int!
-  name: String
 }
 
 type User {
