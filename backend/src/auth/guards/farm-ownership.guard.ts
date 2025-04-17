@@ -23,6 +23,15 @@ export class FarmOwnershipGuard implements CanActivate {
     if (!input) {
       throw new Error('農場IDが指定されていません');
     }
+
+    if (!currentUser) {
+      throw new Error('認証されていません');
+    }
+
+    if (!currentUser.farms || currentUser.farms.length === 0) {
+      throw new Error('所有している農場がありません');
+    }
+
     const isFarmOwner = currentUser.farms?.find(
       (farm) => farm.id === input.farmId,
     );
