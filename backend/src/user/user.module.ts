@@ -9,5 +9,6 @@ import { Farm } from '@/farm/entities/farm.entity';
 @Module({
   imports: [DbModule, TypeOrmModule.forFeature([User, Farm])],
   providers: [UserResolver, UserService],
+  exports: [UserService],
 })
 export class UserModule { }

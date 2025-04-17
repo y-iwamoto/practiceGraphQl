@@ -17,6 +17,12 @@ export class FarmService {
     });
   }
 
+  async findOne(id: number): Promise<Farm | null> {
+    return this.dataSource.getRepository(Farm).findOne({
+      where: { id },
+    });
+  }
+
   async create(createFarmInput: CreateFarmInput): Promise<Farm> {
     const user = await this.userService.findOne(createFarmInput.ownerId);
     if (!user) {

@@ -5,10 +5,11 @@ import { DbModule } from '@/configs/db.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Farm } from '@/farm/entities/farm.entity';
 import { User } from '@/user/user.entity';
-import { UserService } from '@/user/user.service';
+import { UserModule } from '@/user/user.module';
 
 @Module({
-  imports: [DbModule, TypeOrmModule.forFeature([Farm, User])],
-  providers: [FarmResolver, FarmService, UserService],
+  imports: [DbModule, TypeOrmModule.forFeature([Farm, User]), UserModule],
+  providers: [FarmResolver, FarmService],
+  exports: [FarmService],
 })
 export class FarmModule { }
