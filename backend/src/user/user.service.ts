@@ -23,6 +23,11 @@ export class UserService {
   async findOne(id: number): Promise<User | null> {
     return this.dataSource.getRepository(User).findOne({
       where: { id },
+      relations: {
+        farms: {
+          owner: true,
+        },
+      },
     });
   }
 

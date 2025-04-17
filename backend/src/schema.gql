@@ -12,6 +12,11 @@ input CreateFarmInput {
   restAddress: String!
 }
 
+input CreateProduceItemInput {
+  farmId: Int!
+  name: String!
+}
+
 input CreateUserInput {
   email: String!
   firstName: String!
@@ -32,13 +37,24 @@ type Farm {
   owner: User!
   postalCode: String!
   prefecture: String!
+  produceItems: [ProduceItem!]!
   restAddress: String!
   updatedAt: DateTime
 }
 
 type Mutation {
   createFarm(createFarmInput: CreateFarmInput!): Farm!
+  createProduceItem(createProduceItemInput: CreateProduceItemInput!): ProduceItem!
   createUser(createUserInput: CreateUserInput!): User!
+}
+
+type ProduceItem {
+  createdAt: DateTime
+  farm: Farm!
+  farmId: Int!
+  id: Int!
+  name: String!
+  updatedAt: DateTime
 }
 
 type Query {

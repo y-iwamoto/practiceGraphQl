@@ -1,3 +1,4 @@
+import { ProduceItem } from '@/produce-item/entities/produce-item.entity';
 import { User } from '@/user/user.entity';
 import { ObjectType, Field, ID } from '@nestjs/graphql';
 import { Length } from 'class-validator';
@@ -8,6 +9,7 @@ import {
   Index,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -57,6 +59,10 @@ export class Farm {
   @ManyToOne(() => User, (user) => user.farms)
   @JoinColumn({ name: 'ownerId' })
   owner: User;
+
+  @Field(() => [ProduceItem])
+  @OneToMany(() => ProduceItem, (produceItem) => produceItem.farm)
+  produceItems: ProduceItem[];
 
   @Field(() => Date, { nullable: true })
   @CreateDateColumn({ type: 'timestamptz' })
