@@ -3,6 +3,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from '../user/user.entity';
 import { Farm } from '@/farm/entities/farm.entity';
+import { ProduceItem } from '@/produce-item/entities/produce-item.entity';
 
 @Module({
   imports: [
@@ -18,7 +19,7 @@ import { Farm } from '@/farm/entities/farm.entity';
           database: configService.get<string>('DB_DATABASE'),
           synchronize: configService.get<string>('DB_SYNCH') === 'true',
           logging: configService.get<string>('DB_LOG') === 'true',
-          entities: [User, Farm],
+          entities: [User, Farm, ProduceItem],
           migrations: ['src/migrations/*{.ts,.js}'],
         };
       },
