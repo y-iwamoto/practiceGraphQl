@@ -26,9 +26,13 @@ export class ProduceStockService {
       .getRepository(ProduceStock)
       .findOne({
         where: { id: updateProduceStockInput.id },
+        relations: ['produceItem', 'farm'],
       });
     if (!produceStock) {
-      throw new Error('ProduceStock not found');
+      throw new Error('在庫情報が見つかりません');
+    }
+    if (produceStock.farm.id !== updateProduceStockInput.farmId) {
+      throw new Error('この在庫情報へのアクセス権限がありません');
     }
     produceStock.amount = updateProduceStockInput.amount;
     return this.dataSource.getRepository(ProduceStock).save(produceStock);
