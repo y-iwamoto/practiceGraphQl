@@ -1,7 +1,12 @@
 import { ROLES_KEY } from '@/auth/decorators/roles.decorator';
 import { Role } from '@/auth/enum/role.enum';
 import { IContext } from '@/auth/types/context.interface';
-import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
+import {
+  CanActivate,
+  ExecutionContext,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { GqlExecutionContext } from '@nestjs/graphql';
 
@@ -23,7 +28,7 @@ export class RolesGuard implements CanActivate {
     const user = ctx.getContext<IContext>().currentUser;
 
     if (!user) {
-      throw new Error('ユーザーが認証されていません');
+      throw new UnauthorizedException('ユーザーが認証されていません');
     }
 
     return requiredRoles.includes(user.role);
