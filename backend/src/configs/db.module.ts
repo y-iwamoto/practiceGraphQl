@@ -4,6 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from '../user/user.entity';
 import { Farm } from '@/farm/entities/farm.entity';
 import { ProduceItem } from '@/produce-item/entities/produce-item.entity';
+import { ProduceStock } from '@/produce-stock/entities/produce-stock.entity/produce-stock.entity';
 
 @Module({
   imports: [
@@ -19,7 +20,7 @@ import { ProduceItem } from '@/produce-item/entities/produce-item.entity';
           database: configService.get<string>('DB_DATABASE'),
           synchronize: configService.get<string>('DB_SYNCH') === 'true',
           logging: configService.get<string>('DB_LOG') === 'true',
-          entities: [User, Farm, ProduceItem],
+          entities: [User, Farm, ProduceItem, ProduceStock],
           migrations: ['src/migrations/*{.ts,.js}'],
         };
       },

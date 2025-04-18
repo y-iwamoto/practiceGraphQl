@@ -1,7 +1,6 @@
 import { Farm } from '@/farm/entities/farm.entity';
-import { ProduceStock } from '@/produce-stock/entities/produce-stock.entity/produce-stock.entity';
-import { ObjectType, Field, Int } from '@nestjs/graphql';
-import { Length } from 'class-validator';
+import { ProduceItem } from '@/produce-item/entities/produce-item.entity';
+import { Field, Int, ObjectType } from '@nestjs/graphql';
 import {
   Column,
   CreateDateColumn,
@@ -15,28 +14,32 @@ import {
 
 @Entity()
 @ObjectType()
-export class ProduceItem {
+export class ProduceStock {
   @Field(() => Int)
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Field(() => String)
-  @Column({ type: 'varchar' })
-  @Length(1, 100)
-  name: string;
+  @Field(() => Int)
+  @Column({ type: 'int', default: 0 })
+  amount: number;
 
   @Field(() => Int)
   @Column({ type: 'int' })
   farmId: number;
 
   @Field(() => Farm)
-  @ManyToOne(() => Farm, (farm) => farm.produceItems)
+  @ManyToOne(() => Farm, (farm) => farm.produceStocks)
   @JoinColumn({ name: 'farmId' })
   farm: Farm;
 
-  @Field(() => ProduceStock)
-  @OneToOne(() => ProduceStock, (produceStock) => produceStock.produceItem)
-  produceStock: ProduceStock;
+  @Field(() => Int)
+  @Column({ type: 'int' })
+  produceItemId: number;
+
+  @Field(() => ProduceItem)
+  @OneToOne(() => ProduceItem, (produceItem) => produceItem.produceStock)
+  @JoinColumn({ name: 'produceItemId' })
+  produceItem: ProduceItem;
 
   @Field(() => Date, { nullable: true })
   @CreateDateColumn({ type: 'timestamptz' })
