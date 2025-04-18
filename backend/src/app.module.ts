@@ -11,6 +11,7 @@ import { ProduceItemModule } from './produce-item/produce-item.module';
 import { AuthModule } from './auth/auth.module';
 import { AuthMiddleware } from '@/auth/auth.middleware';
 import { Request } from 'express';
+import { ProduceStockModule } from './produce-stock/produce-stock.module';
 @Module({
   imports: [
     GraphQLModule.forRoot<ApolloDriverConfig>({
@@ -40,6 +41,7 @@ import { Request } from 'express';
     FarmModule,
     ProduceItemModule,
     AuthModule,
+    ProduceStockModule,
   ],
 })
 export class AppModule implements NestModule {
