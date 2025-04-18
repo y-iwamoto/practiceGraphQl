@@ -76,6 +76,13 @@ type Query {
   users: [User!]!
 }
 
+"""ユーザーの権限"""
+enum Role {
+  Admin
+  Buyer
+  Farmer
+}
+
 input UpdateProduceStockInput {
   amount: Int!
   farmId: Int!
@@ -89,5 +96,6 @@ type User {
   firstName: String!
   id: ID!
   lastName: String!
+  role: Role!
   updatedAt: DateTime
 }

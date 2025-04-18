@@ -1,3 +1,4 @@
+import { Role } from '@/auth/enum/role.enum';
 import { Farm } from '@/farm/entities/farm.entity';
 import { Field, ID, ObjectType } from '@nestjs/graphql';
 import { IsEmail, Length } from 'class-validator'
@@ -31,6 +32,10 @@ export class User {
   @Column({ type: 'varchar', nullable: false })
   @Length(2, 55)
   lastName: string;
+
+  @Field(() => Role)
+  @Column({ type: 'enum', enum: Role, default: Role.Buyer })
+  role: Role;
 
   @Field(() => [Farm], { nullable: true })
   @OneToMany(() => Farm, (farm) => farm.owner)
