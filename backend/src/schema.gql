@@ -47,6 +47,7 @@ type Mutation {
   createFarm(createFarmInput: CreateFarmInput!): Farm!
   createProduceItem(createProduceItemInput: CreateProduceItemInput!): ProduceItem!
   createUser(createUserInput: CreateUserInput!): User!
+  updateProduceStock(updateProduceStockInput: UpdateProduceStockInput!): ProduceStock!
 }
 
 type ProduceItem {
@@ -73,6 +74,12 @@ type ProduceStock {
 type Query {
   farms: [Farm!]!
   users: [User!]!
+}
+
+input UpdateProduceStockInput {
+  amount: Int!
+  farmId: Int!
+  id: Int!
 }
 
 type User {
