@@ -38,6 +38,7 @@ type Farm {
   postalCode: String!
   prefecture: String!
   produceItems: [ProduceItem!]!
+  produceStocks: [ProduceStock!]!
   restAddress: String!
   updatedAt: DateTime
 }
@@ -54,6 +55,18 @@ type ProduceItem {
   farmId: Int!
   id: Int!
   name: String!
+  produceStock: ProduceStock!
+  updatedAt: DateTime
+}
+
+type ProduceStock {
+  amount: Int!
+  createdAt: DateTime
+  farm: Farm!
+  farmId: Int!
+  id: Int!
+  produceItem: ProduceItem!
+  produceItemId: Int!
   updatedAt: DateTime
 }
 
