@@ -24,7 +24,7 @@ export class FarmResolver {
   }
 
   @UseGuards(RolesGuard)
-  @Roles(Role.Farmer)
+  @Roles(Role.Farmer, Role.Admin)
   @Mutation(() => Farm)
   async createFarm(@Args('createFarmInput') createFarmInput: CreateFarmInput) {
     try {
