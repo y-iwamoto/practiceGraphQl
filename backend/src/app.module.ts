@@ -17,6 +17,8 @@ import { AuthModule } from './auth/auth.module';
 import { AuthMiddleware } from '@/auth/auth.middleware';
 import { Request } from 'express';
 import { ProduceStockModule } from './produce-stock/produce-stock.module';
+// 明示的にroleのモジュールを定義してgraphqlで使用できるようにする
+import '@/auth/graphql/role.graphql';
 @Module({
   imports: [
     GraphQLModule.forRoot<ApolloDriverConfig>({

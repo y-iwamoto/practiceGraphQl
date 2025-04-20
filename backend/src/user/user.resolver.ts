@@ -5,8 +5,12 @@ import { CreateUserInput } from '@/user/dto/create-user.input';
 import {
   ConflictException,
   InternalServerErrorException,
+  UseGuards,
 } from '@nestjs/common';
 import { GraphQLResolveInfo, Kind } from 'graphql';
+import { Roles } from '@/auth/decorators/roles.decorator';
+import { Role } from '@/auth/enum/role.enum';
+import { RolesGuard } from '@/auth/guards/roles.guard';
 
 @Resolver(() => User)
 export class UserResolver {
@@ -24,6 +28,8 @@ export class UserResolver {
     return this.userService.findAll(relations);
   }
 
+  @UseGuards(RolesGuard)
+  @Roles(Role.Admin)
   @Mutation(() => User)
   async createUser(@Args('createUserInput') createUserInput: CreateUserInput) {
     const isEmailExists = await this.userService.checkEmail(

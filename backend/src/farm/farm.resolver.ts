@@ -3,6 +3,10 @@ import { FarmService } from './farm.service';
 import { Farm } from './entities/farm.entity';
 import { CreateFarmInput } from './dto/create-farm.input';
 import { GraphQLError, GraphQLResolveInfo, Kind } from 'graphql';
+import { UseGuards } from '@nestjs/common';
+import { RolesGuard } from '@/auth/guards/roles.guard';
+import { Roles } from '@/auth/decorators/roles.decorator';
+import { Role } from '@/auth/enum/role.enum';
 
 @Resolver(() => Farm)
 export class FarmResolver {
@@ -19,6 +23,8 @@ export class FarmResolver {
     return this.farmService.findAll(relations);
   }
 
+  @UseGuards(RolesGuard)
+  @Roles(Role.Farmer, Role.Admin)
   @Mutation(() => Farm)
   async createFarm(@Args('createFarmInput') createFarmInput: CreateFarmInput) {
     try {
