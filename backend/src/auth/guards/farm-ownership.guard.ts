@@ -1,13 +1,19 @@
 import { BaseWithFarmIdInput } from '@/auth/dto/BaseWithFarmIdInput';
 import { IContext } from '@/auth/types/context.interface';
-import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  CanActivate,
+  ExecutionContext,
+  ForbiddenException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { GqlExecutionContext } from '@nestjs/graphql';
 
 type InputWithFarmId = { farmId: number };
 
 @Injectable()
 export class FarmOwnershipGuard implements CanActivate {
-
   canActivate(context: ExecutionContext): boolean {
     const ctx = GqlExecutionContext.create(context);
     const args = ctx.getArgs<{
@@ -21,15 +27,15 @@ export class FarmOwnershipGuard implements CanActivate {
     );
 
     if (!input) {
-      throw new Error('農場IDが指定されていません');
+      throw new BadRequestException('農場IDが指定されていません');
     }
 
     if (!currentUser) {
-      throw new Error('認証されていません');
+      throw new UnauthorizedException('認証されていません');
     }
 
     if (!currentUser.farms || currentUser.farms.length === 0) {
-      throw new Error('所有している農場がありません');
+      throw new ForbiddenException('所有している農場がありません');
     }
 
     const isFarmOwner = currentUser.farms?.find(
@@ -37,7 +43,7 @@ export class FarmOwnershipGuard implements CanActivate {
     );
 
     if (!isFarmOwner) {
-      throw new Error('農場の所有者ではありません');
+      throw new ForbiddenException('農場の所有者ではありません');
     }
     return true;
   }
