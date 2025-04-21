@@ -8,11 +8,12 @@ import { Farm } from '@/farm/entities/farm.entity';
 import { FarmModule } from '@/farm/farm.module';
 import { ProduceStock } from '@/produce-stock/entities/produce-stock.entity/produce-stock.entity';
 import { ProduceStockModule } from '@/produce-stock/produce-stock.module';
+import { Order } from '@/order/entities/order.entity';
 
 @Module({
   imports: [
     DbModule,
-    TypeOrmModule.forFeature([ProduceItem, Farm, ProduceStock]),
+    TypeOrmModule.forFeature([ProduceItem, Farm, ProduceStock, Order]),
     FarmModule,
     ProduceStockModule,
   ],

@@ -1,3 +1,4 @@
+import { Order } from '@/order/entities/order.entity';
 import { ProduceItem } from '@/produce-item/entities/produce-item.entity';
 import { ProduceStock } from '@/produce-stock/entities/produce-stock.entity/produce-stock.entity';
 import { User } from '@/user/user.entity';
@@ -68,6 +69,10 @@ export class Farm {
   @Field(() => [ProduceStock])
   @OneToMany(() => ProduceStock, (produceStock) => produceStock.farm)
   produceStocks: ProduceStock[];
+
+  @Field(() => [Order])
+  @OneToMany(() => Order, (order) => order.farm)
+  orders: Order[];
 
   @Field(() => Date, { nullable: true })
   @CreateDateColumn({ type: 'timestamptz' })
