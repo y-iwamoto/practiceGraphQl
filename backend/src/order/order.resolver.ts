@@ -4,7 +4,11 @@ import { Order } from './entities/order.entity';
 import { CreateOrderInput } from './dto/create-order.input';
 import { CurrentUser } from '@/auth/decorators/current-user.decorator';
 import { User } from '@/user/user.entity';
-import { UseGuards } from '@nestjs/common';
+import {
+  BadRequestException,
+  InternalServerErrorException,
+  UseGuards,
+} from '@nestjs/common';
 import { RolesGuard } from '@/auth/guards/roles.guard';
 import { Role } from '@/auth/enum/role.enum';
 import { Roles } from '@/auth/decorators/roles.decorator';
@@ -23,8 +27,11 @@ export class OrderResolver {
     try {
       return this.orderService.create(createOrderInput, currentUser);
     } catch (error) {
+      if (error instanceof BadRequestException) {
+        throw error;
+      }
       console.error(error);
-      throw new Error('Orderの作成に失敗しました');
+      throw new InternalServerErrorException('注文処理中に問題が発生しました');
     }
   }
 }

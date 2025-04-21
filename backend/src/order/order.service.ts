@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateOrderInput } from './dto/create-order.input';
 import { User } from '@/user/user.entity';
 import { DataSource } from 'typeorm';
@@ -28,11 +28,11 @@ export class OrderService {
       });
 
     if (!produceItem) {
-      throw new Error('生産品が見つかりません');
+      throw new BadRequestException('生産品が見つかりません');
     }
 
     if (produceItem.produceStock.amount < createOrderInput.amount) {
-      throw new Error('在庫が不足しています');
+      throw new BadRequestException('在庫が不足しています');
     }
 
     produceItem.produceStock.amount -= createOrderInput.amount;
