@@ -12,6 +12,12 @@ input CreateFarmInput {
   restAddress: String!
 }
 
+input CreateOrderInput {
+  amount: Int!
+  farmId: Int!
+  produceItemId: Int!
+}
+
 input CreateProduceItemInput {
   farmId: Int!
   name: String!
@@ -34,6 +40,7 @@ type Farm {
   createdAt: DateTime
   id: ID!
   name: String!
+  orders: [Order!]!
   owner: User!
   postalCode: String!
   prefecture: String!
@@ -45,9 +52,24 @@ type Farm {
 
 type Mutation {
   createFarm(createFarmInput: CreateFarmInput!): Farm!
+  createOrder(createOrderInput: CreateOrderInput!): Order!
   createProduceItem(createProduceItemInput: CreateProduceItemInput!): ProduceItem!
   createUser(createUserInput: CreateUserInput!): User!
   updateProduceStock(updateProduceStockInput: UpdateProduceStockInput!): ProduceStock!
+}
+
+type Order {
+  amount: Int!
+  buyer: User!
+  buyerId: Int!
+  createdAt: DateTime
+  farm: Farm!
+  farmId: Int!
+  id: Int!
+  orderedAt: DateTime!
+  produceItem: ProduceItem!
+  produceItemId: Int!
+  updatedAt: DateTime
 }
 
 type ProduceItem {
@@ -56,6 +78,7 @@ type ProduceItem {
   farmId: Int!
   id: Int!
   name: String!
+  orders: [Order!]
   produceStock: ProduceStock!
   updatedAt: DateTime
 }
@@ -97,6 +120,7 @@ type User {
   firstName: String!
   id: ID!
   lastName: String!
+  orders: [Order!]
   role: Role!
   updatedAt: DateTime
 }

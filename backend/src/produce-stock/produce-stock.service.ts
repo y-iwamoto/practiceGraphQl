@@ -21,6 +21,14 @@ export class ProduceStockService {
     return manager.save(ProduceStock, produceStock);
   }
 
+  async updateWithTransaction(
+    manager: EntityManager,
+    data: { produceStock: ProduceStock; amount: number },
+  ): Promise<ProduceStock> {
+    data.produceStock.amount = data.amount;
+    return manager.save(ProduceStock, data.produceStock);
+  }
+
   async update(updateProduceStockInput: UpdateProduceStockInput) {
     const produceStock = await this.dataSource
       .getRepository(ProduceStock)
