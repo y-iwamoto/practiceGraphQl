@@ -1,5 +1,6 @@
 import { Role } from '@/auth/enum/role.enum';
 import { Farm } from '@/farm/entities/farm.entity';
+import { Order } from '@/order/entities/order.entity';
 import { Field, ID, ObjectType } from '@nestjs/graphql';
 import { IsEmail, Length } from 'class-validator'
 import {
@@ -40,6 +41,10 @@ export class User {
   @Field(() => [Farm], { nullable: true })
   @OneToMany(() => Farm, (farm) => farm.owner)
   farms?: Farm[];
+
+  @Field(() => [Order], { nullable: true })
+  @OneToMany(() => Order, (order) => order.buyer)
+  orders?: Order[];
 
   @Field(() => Date, { nullable: true })
   @CreateDateColumn({ type: 'timestamptz' })
