@@ -10,46 +10,31 @@ import { Role } from '@/auth/enum/role.enum';
 
 @Resolver(() => Farm)
 export class FarmResolver {
+  private readonly RELATIONS_KEYS = ['owner', 'produceItems', 'produceStocks'];
+
   constructor(private readonly farmService: FarmService) { }
 
   @Query(() => [Farm])
   async farms(@Info() info: GraphQLResolveInfo) {
-    const selections = info.fieldNodes[0].selectionSet?.selections;
-
-    const relationKeys = ['owner', 'produceItems', 'produceStocks'];
-    const relations: Record<string, boolean> = {};
-
-    for (const key of relationKeys) {
-      const hasField = selections?.some(
-        (selection) =>
-          selection.kind === Kind.FIELD && selection.name.value === key,
-      );
-      if (hasField) {
-        relations[key] = true;
-      }
-    }
-
+    const relations = this.parseRelationsFromInfo(info);
     return this.farmService.findAll(relations);
   }
 
   @Query(() => Farm)
   async farm(@Args('id') id: number, @Info() info: GraphQLResolveInfo) {
-    const selections = info.fieldNodes[0].selectionSet?.selections;
-    const relations: Record<string, boolean> = {};
-
-    const relationKeys = ['owner', 'produceItems', 'produceStocks'];
-    for (const key of relationKeys) {
-      const hasField = selections?.some(
-        (selection) =>
-          selection.kind === Kind.FIELD && selection.name.value === key,
-      );
-      if (hasField) {
-        relations[key] = true;
-      }
-    }
-    return this.farmService.findOne(id, relations, {
+    const relations = this.parseRelationsFromInfo(info);
+    const farm = await this.farmService.findOne(id, relations, {
       filterProduceStock: true,
     });
+
+    if (!farm) {
+      throw new GraphQLError('指定されたIDの農場が見つかりません', {
+        extensions: {
+          code: 'NOT_FOUND',
+        },
+      });
+    }
+    return farm;
   }
 
   @UseGuards(RolesGuard)
@@ -69,5 +54,23 @@ export class FarmResolver {
       }
       throw error;
     }
+  }
+
+  private parseRelationsFromInfo(
+    info: GraphQLResolveInfo,
+  ): Record<string, boolean> {
+    const selections = info.fieldNodes[0].selectionSet?.selections;
+    const relations: Record<string, boolean> = {};
+
+    for (const key of this.RELATIONS_KEYS) {
+      const hasField = selections?.some(
+        (selection) =>
+          selection.kind === Kind.FIELD && selection.name.value === key,
+      );
+      if (hasField) {
+        relations[key] = true;
+      }
+    }
+    return relations;
   }
 }
