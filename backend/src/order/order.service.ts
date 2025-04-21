@@ -14,9 +14,8 @@ export class OrderService {
   ) { }
 
   async create(createOrderInput: CreateOrderInput, currentUser: User) {
-    const produceItem = await this.dataSource
-      .getRepository(ProduceItem)
-      .findOne({
+    return this.dataSource.transaction(async (manager) => {
+      const produceItem = await manager.getRepository(ProduceItem).findOne({
         where: {
           id: createOrderInput.produceItemId,
           farmId: createOrderInput.farmId,
@@ -27,17 +26,15 @@ export class OrderService {
         },
       });
 
-    if (!produceItem) {
-      throw new BadRequestException('生産品が見つかりません');
-    }
+      if (!produceItem) {
+        throw new BadRequestException('生産品が見つかりません');
+      }
 
-    if (produceItem.produceStock.amount < createOrderInput.amount) {
-      throw new BadRequestException('在庫が不足しています');
-    }
+      if (produceItem.produceStock.amount < createOrderInput.amount) {
+        throw new BadRequestException('在庫が不足しています');
+      }
 
-    produceItem.produceStock.amount -= createOrderInput.amount;
-
-    return this.dataSource.transaction(async (manager) => {
+      produceItem.produceStock.amount -= createOrderInput.amount;
       const order = manager.getRepository(Order).create({
         ...createOrderInput,
         orderedAt: new Date(),
