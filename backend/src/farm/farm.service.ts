@@ -17,10 +17,46 @@ export class FarmService {
     });
   }
 
-  async findOne(id: number): Promise<Farm | null> {
-    return this.dataSource.getRepository(Farm).findOne({
-      where: { id },
-    });
+  async findOne(
+    id: number,
+    relations: FindOptionsRelations<Farm> = {},
+    options: { filterProduceStock?: boolean } = {},
+  ): Promise<Farm | null> {
+    const queryBuilder = this.dataSource
+      .getRepository(Farm)
+      .createQueryBuilder('farm')
+      .andWhere('farm.id = :id', { id });
+
+    if (relations.owner) {
+      queryBuilder.leftJoinAndSelect('farm.owner', 'owner');
+    }
+
+    if (relations.produceItems) {
+      queryBuilder
+        .leftJoinAndSelect('farm.produceItems', 'produceItems')
+        .leftJoin('produceItems.produceStock', 'produceStock');
+
+      if (options.filterProduceStock) {
+        queryBuilder.andWhere(
+          'EXISTS (SELECT 1 FROM produce_stock WHERE produce_stock."produceItemId" = produceItems.id AND produce_stock.amount > :minAmount)',
+          {
+            minAmount: 0,
+          },
+        );
+      }
+    }
+
+    if (relations.produceStocks) {
+      queryBuilder.leftJoinAndSelect('farm.produceStocks', 'produceStocks');
+
+      if (options.filterProduceStock) {
+        queryBuilder.andWhere('produceStocks.amount > :minAmount', {
+          minAmount: 0,
+        });
+      }
+    }
+
+    return queryBuilder.getOne();
   }
 
   async create(createFarmInput: CreateFarmInput): Promise<Farm> {
@@ -34,5 +70,4 @@ export class FarmService {
       owner: user,
     });
   }
-
 }
