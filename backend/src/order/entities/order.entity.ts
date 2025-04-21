@@ -2,6 +2,7 @@ import { Farm } from '@/farm/entities/farm.entity';
 import { ProduceItem } from '@/produce-item/entities/produce-item.entity';
 import { User } from '@/user/user.entity';
 import { ObjectType, Field, Int } from '@nestjs/graphql';
+import { Min } from 'class-validator';
 import {
   Column,
   CreateDateColumn,
@@ -21,6 +22,7 @@ export class Order {
 
   @Field(() => Int)
   @Column({ type: 'int' })
+  @Min(1, { message: '注文数は1以上である必要があります' })
   amount: number;
 
   @Field(() => Int)
