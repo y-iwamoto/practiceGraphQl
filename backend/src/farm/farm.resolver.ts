@@ -15,12 +15,41 @@ export class FarmResolver {
   @Query(() => [Farm])
   async farms(@Info() info: GraphQLResolveInfo) {
     const selections = info.fieldNodes[0].selectionSet?.selections;
-    const hasOwner = selections?.some(
-      (selection) =>
-        selection.kind === Kind.FIELD && selection.name.value === 'owner',
-    );
-    const relations = hasOwner ? { owner: true } : {};
+
+    const relationKeys = ['owner', 'produceItems', 'produceStocks'];
+    const relations: Record<string, boolean> = {};
+
+    for (const key of relationKeys) {
+      const hasField = selections?.some(
+        (selection) =>
+          selection.kind === Kind.FIELD && selection.name.value === key,
+      );
+      if (hasField) {
+        relations[key] = true;
+      }
+    }
+
     return this.farmService.findAll(relations);
+  }
+
+  @Query(() => Farm)
+  async farm(@Args('id') id: number, @Info() info: GraphQLResolveInfo) {
+    const selections = info.fieldNodes[0].selectionSet?.selections;
+    const relations: Record<string, boolean> = {};
+
+    const relationKeys = ['owner', 'produceItems', 'produceStocks'];
+    for (const key of relationKeys) {
+      const hasField = selections?.some(
+        (selection) =>
+          selection.kind === Kind.FIELD && selection.name.value === key,
+      );
+      if (hasField) {
+        relations[key] = true;
+      }
+    }
+    return this.farmService.findOne(id, relations, {
+      filterProduceStock: true,
+    });
   }
 
   @UseGuards(RolesGuard)
