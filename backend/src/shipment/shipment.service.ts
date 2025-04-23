@@ -84,10 +84,12 @@ export class ShipmentService {
     }
 
     if (shouldSave) {
-      return this.shipmentRepository.save({
-        ...shipment,
-        ...updateShipmentInput,
-      });
+      const updatedShipment = this.shipmentRepository.merge(
+        shipment,
+        updateShipmentInput,
+      );
+
+      return this.shipmentRepository.save(updatedShipment);
     }
 
     return shipment;
