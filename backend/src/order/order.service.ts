@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateOrderInput } from './dto/create-order.input';
 import { User } from '@/user/user.entity';
 import { DataSource } from 'typeorm';
@@ -12,6 +12,18 @@ export class OrderService {
     private readonly dataSource: DataSource,
     private readonly produceStockService: ProduceStockService,
   ) { }
+
+  async findOneOrThrow(id: number) {
+    const order = await this.dataSource.getRepository(Order).findOne({
+      where: { id },
+    });
+
+    if (!order) {
+      throw new NotFoundException('注文が見つかりません');
+    }
+
+    return order;
+  }
 
   async create(createOrderInput: CreateOrderInput, currentUser: User) {
     return this.dataSource.transaction(async (manager) => {

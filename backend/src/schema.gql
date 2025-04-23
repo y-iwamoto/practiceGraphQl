@@ -23,6 +23,10 @@ input CreateProduceItemInput {
   name: String!
 }
 
+input CreateShipmentInput {
+  orderId: Int!
+}
+
 input CreateUserInput {
   email: String!
   firstName: String!
@@ -54,8 +58,10 @@ type Mutation {
   createFarm(createFarmInput: CreateFarmInput!): Farm!
   createOrder(createOrderInput: CreateOrderInput!): Order!
   createProduceItem(createProduceItemInput: CreateProduceItemInput!): ProduceItem!
+  createShipment(createShipmentInput: CreateShipmentInput!): Shipment!
   createUser(createUserInput: CreateUserInput!): User!
   updateProduceStock(updateProduceStockInput: UpdateProduceStockInput!): ProduceStock!
+  updateShipment(updateShipmentInput: UpdateShipmentInput!): Shipment!
 }
 
 type Order {
@@ -69,6 +75,7 @@ type Order {
   orderedAt: DateTime!
   produceItem: ProduceItem!
   produceItemId: Int!
+  shipment: Shipment
   updatedAt: DateTime
 }
 
@@ -107,10 +114,34 @@ enum Role {
   Farmer
 }
 
+type Shipment {
+  createdAt: DateTime!
+  deliveredAt: DateTime
+  estimatedDeliveryDate: DateTime
+  id: Int!
+  order: Order!
+  orderId: Int!
+  shippedAt: DateTime
+  status: ShipmentStatus!
+  updatedAt: DateTime!
+}
+
+"""発送ステータス"""
+enum ShipmentStatus {
+  DELIVERED
+  PENDING
+  SHIPPED
+}
+
 input UpdateProduceStockInput {
   amount: Int!
   farmId: Int!
   id: Int!
+}
+
+input UpdateShipmentInput {
+  id: Int!
+  status: ShipmentStatus!
 }
 
 type User {

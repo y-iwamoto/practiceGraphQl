@@ -18,8 +18,10 @@ import { AuthMiddleware } from '@/auth/auth.middleware';
 import { Request } from 'express';
 import { ProduceStockModule } from './produce-stock/produce-stock.module';
 import { OrderModule } from './order/order.module';
+import { ShipmentModule } from './shipment/shipment.module';
 // 明示的にroleのモジュールを定義してgraphqlで使用できるようにする
 import '@/auth/graphql/role.graphql';
+import '@/shipment/graphql/shipment-status.graphql';
 @Module({
   imports: [
     GraphQLModule.forRoot<ApolloDriverConfig>({
@@ -51,6 +53,7 @@ import '@/auth/graphql/role.graphql';
     AuthModule,
     ProduceStockModule,
     OrderModule,
+    ShipmentModule,
   ],
 })
 export class AppModule implements NestModule {
