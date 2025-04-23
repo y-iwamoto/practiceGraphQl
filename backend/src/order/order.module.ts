@@ -14,5 +14,6 @@ import { ProduceStockModule } from '@/produce-stock/produce-stock.module';
     ProduceStockModule,
   ],
   providers: [OrderResolver, OrderService],
+  exports: [OrderService],
 })
 export class OrderModule { }
