@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateShipmentInput } from './dto/create-shipment.input';
 import { Repository } from 'typeorm';
 import { Shipment } from '@/shipment/entities/shipment.entity';
@@ -9,6 +13,8 @@ import { ShipmentStatus } from '@/shipment/enum/shipment-status.enum';
 
 @Injectable()
 export class ShipmentService {
+  private readonly DEFAULT_DELIVERY_DAYS = 7;
+
   constructor(
     @InjectRepository(Shipment)
     private readonly shipmentRepository: Repository<Shipment>,
@@ -51,12 +57,22 @@ export class ShipmentService {
     let shouldSave = false;
 
     if (
+      updateShipmentInput.status &&
+      !this.isValidStatusTransition(shipment.status, updateShipmentInput.status)
+    ) {
+      throw new BadRequestException(
+        `${shipment.status}から${updateShipmentInput.status}へのステータス変更は許可されていません`,
+      );
+    }
+
+    if (
       updateShipmentInput.status === ShipmentStatus.SHIPPED &&
       !shipment.shippedAt
     ) {
       shipment.shippedAt = new Date();
-      shipment.estimatedDeliveryDate = new Date(
-        shipment.shippedAt.getTime() + 7 * 24 * 60 * 60 * 1000,
+      shipment.estimatedDeliveryDate = this.calculateEstimatedDeliveryDate(
+        shipment.shippedAt,
+        this.DEFAULT_DELIVERY_DAYS,
       );
       shouldSave = true;
     } else if (
@@ -75,5 +91,27 @@ export class ShipmentService {
     }
 
     return shipment;
+  }
+
+  private isValidStatusTransition(
+    currentStatus: ShipmentStatus,
+    newStatus: ShipmentStatus,
+  ): boolean {
+    const validTransitions: Record<ShipmentStatus, ShipmentStatus[]> = {
+      [ShipmentStatus.PENDING]: [ShipmentStatus.SHIPPED],
+      [ShipmentStatus.SHIPPED]: [ShipmentStatus.DELIVERED],
+      [ShipmentStatus.DELIVERED]: [],
+    };
+
+    return validTransitions[currentStatus]?.includes(newStatus) ?? false;
+  }
+
+  private calculateEstimatedDeliveryDate(
+    shippedAt: Date,
+    deliveryDays: number,
+  ): Date {
+    const estimatedDate = new Date(shippedAt);
+    estimatedDate.setDate(estimatedDate.getDate() + deliveryDays);
+    return estimatedDate;
   }
 }
