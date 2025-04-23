@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateShipmentInput } from './dto/create-shipment.input';
 import { Repository } from 'typeorm';
 import { Shipment } from '@/shipment/entities/shipment.entity';
@@ -31,6 +31,14 @@ export class ShipmentService {
     const order = await this.orderService.findOneOrThrow(
       createShipmentInput.orderId,
     );
+
+    const existingShipment = await this.shipmentRepository.findOne({
+      where: { orderId: createShipmentInput.orderId },
+    });
+
+    if (existingShipment) {
+      throw new BadRequestException('この注文は既に出荷と関連付けられています');
+    }
 
     return this.shipmentRepository.save({
       ...createShipmentInput,
