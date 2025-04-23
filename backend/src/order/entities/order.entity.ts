@@ -1,5 +1,6 @@
 import { Farm } from '@/farm/entities/farm.entity';
 import { ProduceItem } from '@/produce-item/entities/produce-item.entity';
+import { Shipment } from '@/shipment/entities/shipment.entity';
 import { User } from '@/user/user.entity';
 import { ObjectType, Field, Int } from '@nestjs/graphql';
 import { Min } from 'class-validator';
@@ -9,6 +10,7 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -51,6 +53,11 @@ export class Order {
   @ManyToOne(() => ProduceItem, (produceItem) => produceItem.orders)
   @JoinColumn({ name: 'produceItemId' })
   produceItem: ProduceItem;
+
+  @Field(() => Shipment)
+  @OneToOne(() => Shipment, (shipment) => shipment.order)
+  @JoinColumn({ name: 'shipmentId' })
+  shipment: Shipment;
 
   @Field(() => Date)
   @Column({ type: 'timestamptz' })
