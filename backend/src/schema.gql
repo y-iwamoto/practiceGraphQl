@@ -75,7 +75,7 @@ type Order {
   orderedAt: DateTime!
   produceItem: ProduceItem!
   produceItemId: Int!
-  shipment: Shipment!
+  shipment: Shipment
   updatedAt: DateTime
 }
 

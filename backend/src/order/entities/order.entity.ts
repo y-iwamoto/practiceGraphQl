@@ -54,7 +54,7 @@ export class Order {
   @JoinColumn({ name: 'produceItemId' })
   produceItem: ProduceItem;
 
-  @Field(() => Shipment)
+  @Field(() => Shipment, { nullable: true })
   @OneToOne(() => Shipment, (shipment) => shipment.order)
   @JoinColumn({ name: 'shipmentId' })
   shipment: Shipment;
