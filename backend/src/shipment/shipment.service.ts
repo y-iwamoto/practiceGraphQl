@@ -104,6 +104,7 @@ export class ShipmentService {
       ) {
         shipment.deliveredAt = new Date();
         shipment.order.status = OrderStatus.DELIVERED;
+        shipment.order.shipment = shipment;
         shouldSave = true;
       }
 
