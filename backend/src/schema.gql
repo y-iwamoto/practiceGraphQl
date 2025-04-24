@@ -76,7 +76,17 @@ type Order {
   produceItem: ProduceItem!
   produceItemId: Int!
   shipment: Shipment
+  status: OrderStatus!
   updatedAt: DateTime
+}
+
+"""注文ステータス"""
+enum OrderStatus {
+  CANCELLED
+  CONFIRMED
+  DELIVERED
+  PENDING
+  SHIPPED
 }
 
 type ProduceItem {

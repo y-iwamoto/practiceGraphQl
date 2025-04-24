@@ -4,12 +4,13 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { CreateShipmentInput } from './dto/create-shipment.input';
-import { Repository } from 'typeorm';
+import { DataSource, EntityManager, Repository } from 'typeorm';
 import { Shipment } from '@/shipment/entities/shipment.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { OrderService } from '@/order/order.service';
 import { UpdateShipmentInput } from '@/shipment/dto/update-shipment.input';
 import { ShipmentStatus } from '@/shipment/enum/shipment-status.enum';
+import { OrderStatus } from '@/order/enum/order-status.enum';
 
 @Injectable()
 export class ShipmentService {
@@ -19,11 +20,14 @@ export class ShipmentService {
     @InjectRepository(Shipment)
     private readonly shipmentRepository: Repository<Shipment>,
     private readonly orderService: OrderService,
+    private readonly dataSource: DataSource,
   ) { }
 
-  async findOneOrThrow(id: number) {
-    const shipment = await this.shipmentRepository.findOne({
+  async findOneOrThrow(id: number, manager?: EntityManager) {
+    const repo = manager?.getRepository(Shipment) ?? this.shipmentRepository;
+    const shipment = await repo.findOne({
       where: { id },
+      relations: ['order'],
     });
 
     if (!shipment) {
@@ -34,65 +38,89 @@ export class ShipmentService {
   }
 
   async create(createShipmentInput: CreateShipmentInput) {
-    const order = await this.orderService.findOneOrThrow(
-      createShipmentInput.orderId,
-    );
+    return this.dataSource.transaction(async (manager) => {
+      const order = await this.orderService.findOneOrThrow(
+        createShipmentInput.orderId,
+        manager,
+      );
 
-    const existingShipment = await this.shipmentRepository.findOne({
-      where: { orderId: createShipmentInput.orderId },
-    });
+      const existingShipment = await manager.findOne(Shipment, {
+        where: { orderId: createShipmentInput.orderId },
+      });
 
-    if (existingShipment) {
-      throw new BadRequestException('この注文は既に出荷と関連付けられています');
-    }
+      if (existingShipment) {
+        throw new BadRequestException(
+          'この注文は既に出荷と関連付けられています',
+        );
+      }
 
-    return this.shipmentRepository.save({
-      ...createShipmentInput,
-      order,
+      order.status = OrderStatus.CONFIRMED;
+      await manager.save(order);
+
+      const shipment = manager.create(Shipment, {
+        ...createShipmentInput,
+        order,
+      });
+
+      return manager.save(shipment);
     });
   }
 
   async update(updateShipmentInput: UpdateShipmentInput) {
-    const shipment = await this.findOneOrThrow(updateShipmentInput.id);
-    let shouldSave = false;
-
-    if (
-      updateShipmentInput.status &&
-      !this.isValidStatusTransition(shipment.status, updateShipmentInput.status)
-    ) {
-      throw new BadRequestException(
-        `${shipment.status}から${updateShipmentInput.status}へのステータス変更は許可されていません`,
+    return this.dataSource.transaction(async (manager) => {
+      const shipment = await this.findOneOrThrow(
+        updateShipmentInput.id,
+        manager,
       );
-    }
+      let shouldSave = false;
 
-    if (
-      updateShipmentInput.status === ShipmentStatus.SHIPPED &&
-      !shipment.shippedAt
-    ) {
-      shipment.shippedAt = new Date();
-      shipment.estimatedDeliveryDate = this.calculateEstimatedDeliveryDate(
-        shipment.shippedAt,
-        this.DEFAULT_DELIVERY_DAYS,
-      );
-      shouldSave = true;
-    } else if (
-      updateShipmentInput.status === ShipmentStatus.DELIVERED &&
-      !shipment.deliveredAt
-    ) {
-      shipment.deliveredAt = new Date();
-      shouldSave = true;
-    }
+      if (
+        updateShipmentInput.status &&
+        !this.isValidStatusTransition(
+          shipment.status,
+          updateShipmentInput.status,
+        )
+      ) {
+        throw new BadRequestException(
+          `${shipment.status}から${updateShipmentInput.status}へのステータス変更は許可されていません`,
+        );
+      }
 
-    if (shouldSave) {
-      const updatedShipment = this.shipmentRepository.merge(
-        shipment,
-        updateShipmentInput,
-      );
+      if (
+        updateShipmentInput.status === ShipmentStatus.SHIPPED &&
+        !shipment.shippedAt
+      ) {
+        shipment.shippedAt = new Date();
+        shipment.estimatedDeliveryDate = this.calculateEstimatedDeliveryDate(
+          shipment.shippedAt,
+          this.DEFAULT_DELIVERY_DAYS,
+        );
+        shipment.order.status = OrderStatus.SHIPPED;
+        shipment.order.shipment = shipment;
+        shouldSave = true;
+      } else if (
+        updateShipmentInput.status === ShipmentStatus.DELIVERED &&
+        !shipment.deliveredAt
+      ) {
+        shipment.deliveredAt = new Date();
+        shipment.order.status = OrderStatus.DELIVERED;
+        shipment.order.shipment = shipment;
+        shouldSave = true;
+      }
 
-      return this.shipmentRepository.save(updatedShipment);
-    }
+      if (shouldSave) {
+        const updatedShipment = manager.merge(
+          Shipment,
+          shipment,
+          updateShipmentInput,
+        );
+        await manager.save(shipment.order);
 
-    return shipment;
+        return await manager.save(updatedShipment);
+      }
+
+      return shipment;
+    });
   }
 
   private isValidStatusTransition(
