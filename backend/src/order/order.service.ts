@@ -1,7 +1,11 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateOrderInput } from './dto/create-order.input';
 import { User } from '@/user/user.entity';
-import { DataSource } from 'typeorm';
+import { DataSource, EntityManager } from 'typeorm';
 import { Order } from '@/order/entities/order.entity';
 import { ProduceItem } from '@/produce-item/entities/produce-item.entity';
 import { ProduceStockService } from '@/produce-stock/produce-stock.service';
@@ -13,10 +17,10 @@ export class OrderService {
     private readonly produceStockService: ProduceStockService,
   ) { }
 
-  async findOneOrThrow(id: number) {
-    const order = await this.dataSource.getRepository(Order).findOne({
-      where: { id },
-    });
+  async findOneOrThrow(id: number, manager?: EntityManager) {
+    const repo =
+      manager?.getRepository(Order) ?? this.dataSource.getRepository(Order);
+    const order = await repo.findOne({ where: { id } });
 
     if (!order) {
       throw new NotFoundException('注文が見つかりません');
