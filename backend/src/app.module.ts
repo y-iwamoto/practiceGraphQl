@@ -22,6 +22,7 @@ import { ShipmentModule } from './shipment/shipment.module';
 // 明示的にroleのモジュールを定義してgraphqlで使用できるようにする
 import '@/auth/graphql/role.graphql';
 import '@/shipment/graphql/shipment-status.graphql';
+import '@/order/graphql/order-status.graphql';
 @Module({
   imports: [
     GraphQLModule.forRoot<ApolloDriverConfig>({

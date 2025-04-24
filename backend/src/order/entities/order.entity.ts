@@ -1,4 +1,5 @@
 import { Farm } from '@/farm/entities/farm.entity';
+import { OrderStatus } from '@/order/enum/order-status.enum';
 import { ProduceItem } from '@/produce-item/entities/produce-item.entity';
 import { Shipment } from '@/shipment/entities/shipment.entity';
 import { User } from '@/user/user.entity';
@@ -58,6 +59,10 @@ export class Order {
   @OneToOne(() => Shipment, (shipment) => shipment.order)
   @JoinColumn({ name: 'shipmentId' })
   shipment: Shipment;
+
+  @Field(() => OrderStatus)
+  @Column({ type: 'enum', enum: OrderStatus, default: OrderStatus.PENDING })
+  status: OrderStatus;
 
   @Field(() => Date)
   @Column({ type: 'timestamptz' })
