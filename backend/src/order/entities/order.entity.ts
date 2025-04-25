@@ -1,6 +1,6 @@
 import { Farm } from '@/farm/entities/farm.entity';
+import { OrderDetail } from '@/order-detail/entities/order-detail.entity';
 import { OrderStatus } from '@/order/enum/order-status.enum';
-import { ProduceItem } from '@/produce-item/entities/produce-item.entity';
 import { Shipment } from '@/shipment/entities/shipment.entity';
 import { User } from '@/user/user.entity';
 import { ObjectType, Field, Int } from '@nestjs/graphql';
@@ -11,6 +11,7 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -22,11 +23,6 @@ export class Order {
   @Field(() => Int)
   @PrimaryGeneratedColumn()
   id: number;
-
-  @Field(() => Int)
-  @Column({ type: 'int' })
-  @Min(1, { message: '注文数は1以上である必要があります' })
-  amount: number;
 
   @Field(() => Int)
   @Column({ type: 'int' })
@@ -46,15 +42,6 @@ export class Order {
   @JoinColumn({ name: 'farmId' })
   farm: Farm;
 
-  @Field(() => Int)
-  @Column({ type: 'int' })
-  produceItemId: number;
-
-  @Field(() => ProduceItem)
-  @ManyToOne(() => ProduceItem, (produceItem) => produceItem.orders)
-  @JoinColumn({ name: 'produceItemId' })
-  produceItem: ProduceItem;
-
   @Field(() => Shipment, { nullable: true })
   @OneToOne(() => Shipment, (shipment) => shipment.order)
   @JoinColumn({ name: 'shipmentId' })
@@ -67,6 +54,10 @@ export class Order {
   @Field(() => Date)
   @Column({ type: 'timestamptz' })
   orderedAt: Date;
+
+  @Field(() => [OrderDetail])
+  @OneToMany(() => OrderDetail, (orderDetail) => orderDetail.order)
+  orderDetails: OrderDetail[];
 
   @Field(() => Date, { nullable: true })
   @CreateDateColumn({ type: 'timestamptz' })

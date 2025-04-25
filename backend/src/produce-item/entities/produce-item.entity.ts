@@ -1,5 +1,5 @@
 import { Farm } from '@/farm/entities/farm.entity';
-import { Order } from '@/order/entities/order.entity';
+import { OrderDetail } from '@/order-detail/entities/order-detail.entity';
 import { ProduceStock } from '@/produce-stock/entities/produce-stock.entity/produce-stock.entity';
 import { ObjectType, Field, Int } from '@nestjs/graphql';
 import { Length } from 'class-validator';
@@ -40,9 +40,9 @@ export class ProduceItem {
   @OneToOne(() => ProduceStock, (produceStock) => produceStock.produceItem)
   produceStock: ProduceStock;
 
-  @Field(() => [Order], { nullable: true })
-  @OneToMany(() => Order, (order) => order.produceItem)
-  orders?: Order[];
+  @Field(() => [OrderDetail])
+  @OneToMany(() => OrderDetail, (orderDetail) => orderDetail.produceItem)
+  orderDetails: OrderDetail[];
 
   @Field(() => Date, { nullable: true })
   @CreateDateColumn({ type: 'timestamptz' })
