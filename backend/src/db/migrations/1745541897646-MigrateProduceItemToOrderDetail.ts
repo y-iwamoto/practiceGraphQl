@@ -37,7 +37,7 @@ export class MigrateProduceItemToOrderDetail1745541897646
         await queryRunner.query(`
             UPDATE "order" SET "produceItemId" = sub."produceItemId" FROM (
                 SELECT DISTINCT ON ("orderId") "orderId", "produceItemId" FROM "order_detail" ORDER BY "orderId", "id"
-            ) AS sub WHERE "order"."id" = sub."id";
+            ) AS sub WHERE "order"."id" = sub."orderId";
         `);
         await queryRunner.query(`
             ALTER TABLE "order" ADD CONSTRAINT "FK_order_produceItem" FOREIGN KEY ("produceItemId") REFERENCES "produce_item"("id") ON DELETE CASCADE;
