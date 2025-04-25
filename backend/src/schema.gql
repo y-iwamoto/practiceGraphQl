@@ -13,9 +13,8 @@ input CreateFarmInput {
 }
 
 input CreateOrderInput {
-  amount: Int!
   farmId: Int!
-  produceItemId: Int!
+  produceItems: [ProduceItemOrderInput!]!
 }
 
 input CreateProduceItemInput {
@@ -65,18 +64,27 @@ type Mutation {
 }
 
 type Order {
-  amount: Int!
   buyer: User!
   buyerId: Int!
   createdAt: DateTime
   farm: Farm!
   farmId: Int!
   id: Int!
+  orderDetails: [OrderDetail!]!
   orderedAt: DateTime!
-  produceItem: ProduceItem!
-  produceItemId: Int!
   shipment: Shipment
   status: OrderStatus!
+  updatedAt: DateTime
+}
+
+type OrderDetail {
+  amount: Int!
+  createdAt: DateTime
+  id: Int!
+  order: Order!
+  orderId: Int!
+  produceItem: ProduceItem!
+  produceItemId: Int!
   updatedAt: DateTime
 }
 
@@ -95,9 +103,14 @@ type ProduceItem {
   farmId: Int!
   id: Int!
   name: String!
-  orders: [Order!]
+  orderDetails: [OrderDetail!]!
   produceStock: ProduceStock!
   updatedAt: DateTime
+}
+
+input ProduceItemOrderInput {
+  amount: Int!
+  produceItemId: Int!
 }
 
 type ProduceStock {

@@ -1,21 +1,32 @@
 import { InputType, Int, Field } from '@nestjs/graphql';
-import { IsInt, IsNotEmpty, Min } from 'class-validator';
+import { Type } from 'class-transformer';
+import { IsArray, IsInt, IsNotEmpty, Min, Validate } from 'class-validator';
+
+@InputType()
+export class ProduceItemOrderInput {
+  @Field(() => Int)
+  @IsNotEmpty()
+  @IsInt()
+  @Min(1, { message: '注文数は1以上で入力してください' })
+  amount: number;
+
+  @Field(() => Int)
+  @IsNotEmpty()
+  @IsInt()
+  produceItemId: number;
+}
 
 @InputType()
 export class CreateOrderInput {
   @Field(() => Int)
   @IsNotEmpty()
   @IsInt()
-  @Min(0, { message: '注文数は0以上で入力してください' })
-  amount: number;
-
-  @Field(() => Int)
-  @IsNotEmpty()
-  @IsInt()
   farmId: number;
 
-  @Field(() => Int)
-  @IsNotEmpty()
-  @IsInt()
-  produceItemId: number;
+  @Field(() => [ProduceItemOrderInput])
+  @IsArray()
+  @IsNotEmpty({ message: '生産品の注文情報を入力してください' })
+  @Validate(ProduceItemOrderInput, { each: true })
+  @Type(() => ProduceItemOrderInput)
+  produceItems: ProduceItemOrderInput[];
 }

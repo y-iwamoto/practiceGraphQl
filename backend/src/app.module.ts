@@ -19,6 +19,7 @@ import { Request } from 'express';
 import { ProduceStockModule } from './produce-stock/produce-stock.module';
 import { OrderModule } from './order/order.module';
 import { ShipmentModule } from './shipment/shipment.module';
+import { OrderDetailModule } from './order-detail/order-detail.module';
 // 明示的にroleのモジュールを定義してgraphqlで使用できるようにする
 import '@/auth/graphql/role.graphql';
 import '@/shipment/graphql/shipment-status.graphql';
@@ -55,6 +56,7 @@ import '@/order/graphql/order-status.graphql';
     ProduceStockModule,
     OrderModule,
     ShipmentModule,
+    OrderDetailModule,
   ],
 })
 export class AppModule implements NestModule {

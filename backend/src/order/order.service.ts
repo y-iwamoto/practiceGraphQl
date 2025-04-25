@@ -9,6 +9,7 @@ import { DataSource, EntityManager } from 'typeorm';
 import { Order } from '@/order/entities/order.entity';
 import { ProduceItem } from '@/produce-item/entities/produce-item.entity';
 import { ProduceStockService } from '@/produce-stock/produce-stock.service';
+import { OrderDetail } from '@/order-detail/entities/order-detail.entity';
 
 @Injectable()
 export class OrderService {
@@ -31,41 +32,65 @@ export class OrderService {
 
   async create(createOrderInput: CreateOrderInput, currentUser: User) {
     return this.dataSource.transaction(async (manager) => {
-      const produceItem = await manager.getRepository(ProduceItem).findOne({
-        where: {
-          id: createOrderInput.produceItemId,
-          farmId: createOrderInput.farmId,
-        },
-        relations: {
-          produceStock: true,
-          farm: true,
-        },
-      });
-
-      if (!produceItem) {
-        throw new BadRequestException('生産品が見つかりません');
+      // TODO: ここから確認
+      const farm = currentUser.farms?.find(
+        (farm) => farm.id === createOrderInput.farmId,
+      );
+      if (!farm) {
+        throw new BadRequestException('農場が見つかりません');
       }
 
-      if (produceItem.produceStock.amount < createOrderInput.amount) {
-        throw new BadRequestException('在庫が不足しています');
-      }
 
-      produceItem.produceStock.amount -= createOrderInput.amount;
       const order = manager.getRepository(Order).create({
-        ...createOrderInput,
         orderedAt: new Date(),
         buyer: currentUser,
-        farm: produceItem.farm,
-        produceItem: produceItem,
+        farm,
       });
 
       await manager.save(order);
 
-      await this.produceStockService.updateWithTransaction(manager, {
-        produceStock: produceItem.produceStock,
-        amount: produceItem.produceStock.amount,
-      });
+      for (const item of createOrderInput.produceItems) {
+        const produceItem = await manager.getRepository(ProduceItem).findOne({
+          where: {
+            id: item.produceItemId,
+            farmId: createOrderInput.farmId,
+          },
+          relations: {
+            produceStock: true,
+          },
+        });
 
+        if (!produceItem) {
+          throw new BadRequestException(
+            `生産品(ID: ${item.produceItemId})が見つかりません`,
+          );
+        }
+
+        if (produceItem.produceStock.amount < item.amount) {
+          throw new BadRequestException(
+            `生産品(ID: ${item.produceItemId})の在庫が不足しています`,
+          );
+        }
+
+        produceItem.produceStock.amount -= item.amount;
+
+        const orderDetail = manager.getRepository(OrderDetail).create({
+          ...item,
+          order,
+          produceItem,
+        });
+
+        await manager.save(orderDetail);
+
+        await this.produceStockService.updateWithTransaction(manager, {
+          produceStock: produceItem.produceStock,
+          amount: produceItem.produceStock.amount,
+        });
+      }
+      order.orderDetails = await manager.getRepository(OrderDetail).find({
+        where: { orderId: order.id },
+        relations: { produceItem: true },
+      });
       return order;
     });
   }
