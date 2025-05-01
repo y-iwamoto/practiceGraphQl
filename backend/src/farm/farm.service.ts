@@ -34,7 +34,7 @@ export class FarmService {
     if (relations.produceItems) {
       queryBuilder
         .leftJoinAndSelect('farm.produceItems', 'produceItems')
-        .leftJoin('produceItems.produceStock', 'produceStock');
+        .leftJoinAndSelect('produceItems.produceStock', 'produceStock');
 
       if (options.filterProduceStock) {
         queryBuilder.andWhere(
