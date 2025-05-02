@@ -8,6 +8,7 @@ import App from './App.tsx'
 import UserList from './user/UserList.tsx'
 import UserCreateInput from './user/UserCreateInput.tsx'
 import FarmCreateInput from './farm/FarmCreateInput.tsx'
+import OrderCreateInput from './order/OrderCreateInput.tsx'
 
 const rootElement = document.getElementById('root');
 if (!rootElement) {
@@ -23,6 +24,7 @@ createRoot(rootElement).render(
           <Route path="/user" element={<UserList />} />
           <Route path="/user-create-input" element={<UserCreateInput />} />
           <Route path="/farm-create-input" element={<FarmCreateInput />} />
+          <Route path="/order-create-input" element={<OrderCreateInput />} />
         </Routes>
       </BrowserRouter>
     </ApolloProvider>

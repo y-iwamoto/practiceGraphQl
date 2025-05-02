@@ -16,11 +16,15 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
 type Documents = {
     "\n  mutation CreateFarm($createFarmInput: CreateFarmInput!) {\n    createFarm(createFarmInput: $createFarmInput) {\n      id\n      name\n      postalCode\n      prefecture\n      city\n      restAddress\n      building\n      owner {\n        id\n        email\n        firstName\n        lastName\n      }\n    }\n  }\n": typeof types.CreateFarmDocument,
     "\n  query GetUsers {\n    users {\n      id\n      email\n      firstName\n      lastName\n    }\n  }\n": typeof types.GetUsersDocument,
+    "\n  mutation CreateOrder($createOrderInput: CreateOrderInput!) {\n    createOrder(createOrderInput: $createOrderInput) {\n      id\n      orderedAt\n      status\n      buyer {\n        id\n        firstName\n        lastName\n        email\n      }\n      farm {\n        id\n        name\n      }\n      orderDetails {\n        id\n        amount\n        produceItem {\n          id\n          name\n        }\n      }\n    }\n  }\n": typeof types.CreateOrderDocument,
+    "\n  query GetFarmRelatedItem($farmId: Float!) {\n    farm(id: $farmId) {\n      id\n      name\n      produceItems {\n        id\n        name\n        produceStock {\n          id\n          amount\n        }\n      }\n    }\n  }\n": typeof types.GetFarmRelatedItemDocument,
     "\n  mutation CreateUser($createUserInput: CreateUserInput!) {\n    createUser(createUserInput: $createUserInput) {\n      id\n      email\n      firstName\n      lastName\n    }\n  }\n": typeof types.CreateUserDocument,
 };
 const documents: Documents = {
     "\n  mutation CreateFarm($createFarmInput: CreateFarmInput!) {\n    createFarm(createFarmInput: $createFarmInput) {\n      id\n      name\n      postalCode\n      prefecture\n      city\n      restAddress\n      building\n      owner {\n        id\n        email\n        firstName\n        lastName\n      }\n    }\n  }\n": types.CreateFarmDocument,
     "\n  query GetUsers {\n    users {\n      id\n      email\n      firstName\n      lastName\n    }\n  }\n": types.GetUsersDocument,
+    "\n  mutation CreateOrder($createOrderInput: CreateOrderInput!) {\n    createOrder(createOrderInput: $createOrderInput) {\n      id\n      orderedAt\n      status\n      buyer {\n        id\n        firstName\n        lastName\n        email\n      }\n      farm {\n        id\n        name\n      }\n      orderDetails {\n        id\n        amount\n        produceItem {\n          id\n          name\n        }\n      }\n    }\n  }\n": types.CreateOrderDocument,
+    "\n  query GetFarmRelatedItem($farmId: Float!) {\n    farm(id: $farmId) {\n      id\n      name\n      produceItems {\n        id\n        name\n        produceStock {\n          id\n          amount\n        }\n      }\n    }\n  }\n": types.GetFarmRelatedItemDocument,
     "\n  mutation CreateUser($createUserInput: CreateUserInput!) {\n    createUser(createUserInput: $createUserInput) {\n      id\n      email\n      firstName\n      lastName\n    }\n  }\n": types.CreateUserDocument,
 };
 
@@ -46,6 +50,14 @@ export function graphql(source: "\n  mutation CreateFarm($createFarmInput: Creat
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "\n  query GetUsers {\n    users {\n      id\n      email\n      firstName\n      lastName\n    }\n  }\n"): (typeof documents)["\n  query GetUsers {\n    users {\n      id\n      email\n      firstName\n      lastName\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  mutation CreateOrder($createOrderInput: CreateOrderInput!) {\n    createOrder(createOrderInput: $createOrderInput) {\n      id\n      orderedAt\n      status\n      buyer {\n        id\n        firstName\n        lastName\n        email\n      }\n      farm {\n        id\n        name\n      }\n      orderDetails {\n        id\n        amount\n        produceItem {\n          id\n          name\n        }\n      }\n    }\n  }\n"): (typeof documents)["\n  mutation CreateOrder($createOrderInput: CreateOrderInput!) {\n    createOrder(createOrderInput: $createOrderInput) {\n      id\n      orderedAt\n      status\n      buyer {\n        id\n        firstName\n        lastName\n        email\n      }\n      farm {\n        id\n        name\n      }\n      orderDetails {\n        id\n        amount\n        produceItem {\n          id\n          name\n        }\n      }\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  query GetFarmRelatedItem($farmId: Float!) {\n    farm(id: $farmId) {\n      id\n      name\n      produceItems {\n        id\n        name\n        produceStock {\n          id\n          amount\n        }\n      }\n    }\n  }\n"): (typeof documents)["\n  query GetFarmRelatedItem($farmId: Float!) {\n    farm(id: $farmId) {\n      id\n      name\n      produceItems {\n        id\n        name\n        produceStock {\n          id\n          amount\n        }\n      }\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

@@ -10,7 +10,9 @@ interface FormInputProps<TFormValues extends FieldValues> {
   register: UseFormRegister<TFormValues>;
   type: FormInputType;
   error?: FieldError;
-  placeholder: string
+  placeholder: string;
+  min?: number;
+  max?: number;
   registerOptions?: RegisterOptions<TFormValues, Path<TFormValues>>;
 }
 
@@ -21,6 +23,8 @@ export const FormInput = <TFormValues extends FieldValues>({
   type = 'text',
   error,
   placeholder,
+  min,
+  max,
   registerOptions
 }: FormInputProps<TFormValues>
 ) => {
@@ -34,6 +38,8 @@ export const FormInput = <TFormValues extends FieldValues>({
           placeholder={placeholder}
           aria-invalid={!!error}
           aria-describedby={error ? `${name}-error` : undefined}
+          min={min}
+          max={max}
           {...register(name, registerOptions)}
         />
       </div>
