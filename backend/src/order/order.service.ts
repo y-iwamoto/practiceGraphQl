@@ -10,6 +10,7 @@ import { Order } from '@/order/entities/order.entity';
 import { ProduceItem } from '@/produce-item/entities/produce-item.entity';
 import { ProduceStockService } from '@/produce-stock/produce-stock.service';
 import { OrderDetail } from '@/order-detail/entities/order-detail.entity';
+import { PaginationArgs } from '@/common/dto/pagination.args';
 
 @Injectable()
 export class OrderService {
@@ -17,6 +18,27 @@ export class OrderService {
     private readonly dataSource: DataSource,
     private readonly produceStockService: ProduceStockService,
   ) { }
+
+  async findAllByFarmId(buyerId: number, pagination: PaginationArgs) {
+    const { skip, take } = pagination;
+    const orders = await this.dataSource.getRepository(Order).find({
+      where: { buyerId },
+      skip,
+      take,
+      relations: {
+        farm: true,
+        orderDetails: {
+          produceItem: {
+            produceStock: true,
+          },
+        },
+      },
+      order: {
+        orderedAt: 'DESC',
+      },
+    });
+    return orders;
+  }
 
   async findOneOrThrow(id: number, manager?: EntityManager) {
     const repo =
