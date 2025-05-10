@@ -1,4 +1,4 @@
-import { Resolver, Mutation, Args } from '@nestjs/graphql';
+import { Resolver, Mutation, Args, Query } from '@nestjs/graphql';
 import { OrderService } from './order.service';
 import { Order } from './entities/order.entity';
 import { CreateOrderInput } from './dto/create-order.input';
@@ -12,10 +12,22 @@ import {
 import { RolesGuard } from '@/auth/guards/roles.guard';
 import { Role } from '@/auth/enum/role.enum';
 import { Roles } from '@/auth/decorators/roles.decorator';
+import { PaginationArgs } from '@/common/dto/pagination.args';
 
 @Resolver(() => Order)
 export class OrderResolver {
   constructor(private readonly orderService: OrderService) { }
+
+  @Query(() => [Order])
+  @UseGuards(RolesGuard)
+  @Roles(Role.Buyer, Role.Admin)
+  async orders(
+    @Args('pagination', { type: () => PaginationArgs })
+    pagination: PaginationArgs,
+    @CurrentUser() currentUser: User,
+  ) {
+    return this.orderService.findAllByFarmId(currentUser.id, pagination);
+  }
 
   @Mutation(() => Order)
   @UseGuards(RolesGuard)
